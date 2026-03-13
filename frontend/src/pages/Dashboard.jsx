@@ -44,65 +44,10 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-<<<<<<< HEAD
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0d140d] flex items-center justify-center">
         <div className="text-white text-xl">Loading...</div>
-=======
-  useEffect(() => {
-    const handler = () => setSidebarOpen((p) => !p);
-    window.addEventListener("toggle-sidebar", handler);
-    return () => window.removeEventListener("toggle-sidebar", handler);
-  }, []);
-
-  const handleImageClick = async (image) => {
-    if (!image.diseaseDetected || image.diseaseDetected.toLowerCase() === "pending") return;
-    setModalLoading(true);
-    try {
-      const advisory = await getAdvisory(image.diseaseDetected);
-      setModalData({
-        ...advisory,
-        imageUrl: image.imageUrl,
-        confidence: image.confidence,
-        createdAt: image.createdAt,
-      });
-    } catch (err) {
-      console.error("Failed to fetch advisory", err);
-      showToast("Could not load advisory. Try again.", "error");
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteImage(id);
-      setImages((prev) => prev.filter((img) => img._id !== id));
-      showToast("Image deleted successfully.");
-    } catch (err) {
-      console.error("Delete failed", err);
-      showToast("Failed to delete image.", "error");
-    }
-  };
-
-  if (loading) return (
-    <div className="min-h-screen bg-[#0d140d] flex items-center justify-center">
-      <div className="text-white text-xl">Loading...</div>
-    </div>
-  );
-
-  if (error) return (
-    <div className="min-h-screen bg-[#0d140d] flex items-center justify-center">
-      <div className="text-center">
-        <p className="text-red-400 text-lg mb-4">{error}</p>
-        <button
-          onClick={fetchImages}
-          className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition-all"
-        >
-          Retry
-        </button>
->>>>>>> e66cefa738cd3534f098095c23f9674965f6b2c4
       </div>
     );
   }
