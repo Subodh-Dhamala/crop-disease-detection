@@ -58,7 +58,7 @@ const Dashboard = () => {
 
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-white/5 border-r border-white/10 p-6 min-h-[calc(100vh-73px)]">
+        <div className="hidden md:block w-64 bg-white/5 border-r border-white/10 p-6 min-h-[calc(100vh-73px)]">
           <nav className="space-y-2">
             <button className="w-full text-left px-4 py-3 rounded-xl bg-emerald-500 text-white font-semibold">
               Dashboard
@@ -73,7 +73,7 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-4 md:p-8">
           {/* Auto-refresh indicator */}
           {pendingCount > 0 && (
             <div className="mb-6 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
@@ -83,7 +83,7 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Empty State - Show only when no uploads */}
+          {/* Empty State */}
           {images.length === 0 ? (
             <div className="max-w-2xl mx-auto mt-20">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
@@ -105,9 +105,9 @@ const Dashboard = () => {
               </div>
             </div>
           ) : (
-            /* Image Grid - Show when there are uploads */
+            /* Image Grid */
             <div>
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <h3 className="text-2xl font-bold text-white">
                   Your Uploads ({images.length})
                 </h3>
@@ -119,7 +119,7 @@ const Dashboard = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {images.map((img) => (
                   <ImageCard 
                     key={img._id} 

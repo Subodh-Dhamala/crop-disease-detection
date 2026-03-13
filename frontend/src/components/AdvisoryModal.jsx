@@ -8,7 +8,11 @@ const AdvisoryModal = ({ image, onClose }) => {
   const advisory = image.advisory || {};
   const isHealthy = image.diseaseDetected?.toLowerCase()?.includes('healthy');
   const isUnknown = image.diseaseDetected?.toLowerCase() === 'unknown';
+  const isPending = image.diseaseDetected?.toLowerCase() === 'pending';
   const isNepali = lang === "nepali";
+
+  // Don't show confidence if it's 0, pending, or unknown
+  const showConfidence = image.confidence && image.confidence > 0 && !isPending && !isUnknown;
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
@@ -61,17 +65,18 @@ const AdvisoryModal = ({ image, onClose }) => {
           
           <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
             isHealthy ? "bg-green-500/20 text-green-400" :
-            isUnknown ? "bg-yellow-500/20 text-yellow-400" :
+            isUnknown || isPending ? "bg-yellow-500/20 text-yellow-400" :
             "bg-red-500/20 text-red-400"
           }`}>
             {isHealthy ? (isNepali ? "स्वस्थ" : "Healthy") :
-             isUnknown ? (isNepali ? "अज्ञात" : "Low Confidence") :
+             isUnknown ? (isNepali ? "अज्ञात" : "Not Identified") :
+             isPending ? (isNepali ? "विश्लेषण गर्दै" : "Analyzing") :
              (isNepali ? "रोग पत्ता लाग्यो" : "Disease Detected")}
           </div>
         </div>
 
-        {/* Confidence */}
-        {image.confidence && (
+        {/* Confidence - Only show if > 0 and not unknown/pending */}
+        {showConfidence && (
           <div className="mb-6">
             <div className="flex justify-between text-sm text-zinc-400 mb-2">
               <span>{isNepali ? "विश्वास स्तर" : "Confidence Level"}</span>
@@ -139,7 +144,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {advisory.treatment && advisory.treatment.length > 0 && (
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-white mb-2">
-              {isNepali ? "उपचार" : "Treatment"}
+              {isNepali ? "सामान्य सल्लाह" : "General Advice"}
             </h3>
             <ul className="list-disc list-inside text-gray-300 space-y-1">
               {advisory.treatment.map((item, idx) => (
@@ -153,7 +158,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {advisory.prevention && advisory.prevention.length > 0 && (
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-white mb-2">
-              {isNepali ? "रोकथाम" : "Prevention"}
+              {isNepali ? "अर्को कदम" : "Next Steps"}
             </h3>
             <ul className="list-disc list-inside text-gray-300 space-y-1">
               {advisory.prevention.map((item, idx) => (
@@ -163,16 +168,16 @@ const AdvisoryModal = ({ image, onClose }) => {
           </div>
         )}
 
-        {/* Low Confidence Warning */}
+        {/* Warning for Unknown */}
         {isUnknown && (
           <div className="mt-6 bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4">
             <h3 className="text-lg font-semibold text-yellow-400 mb-2">
-              {isNepali ? "कम विश्वास" : "Low Confidence Detection"}
+              {isNepali ? "पहिचान गर्न सकिएन" : "Could Not Identify"}
             </h3>
             <p className="text-gray-300 text-sm">
               {isNepali 
-                ? "तस्बिर स्पष्ट छैन। कृपया राम्रो प्रकाशमा नजिकबाट फोटो खिच्नुहोस्।"
-                : "The image quality or lighting may not be optimal. Please upload a clear, close-up photo in good lighting for better results."}
+                ? "यो तस्बिर बोटको पात जस्तो देखिदैन वा गुणस्तर राम्रो छैन। कृपया राम्रो प्रकाशमा स्पष्ट फोटो अपलोड गर्नुहोस्।"
+                : "This image may not be a plant leaf, or the quality is not sufficient. Please upload a clear, well-lit photo of a plant leaf."}
             </p>
           </div>
         )}
