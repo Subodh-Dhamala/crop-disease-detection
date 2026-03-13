@@ -4,7 +4,6 @@ import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ImageCard from "../components/ImageCard";
 import AdvisoryModal from "../components/AdvisoryModal";
-import Navbar from "../components/Navbar";
 
 const Dashboard = () => {
   const [images, setImages] = useState([]);
@@ -56,8 +55,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#0d140d]">
-      <Navbar />
-
       <div className="flex">
         {/* Sidebar */}
         <div className="w-64 bg-white/5 border-r border-white/10 p-6 min-h-[calc(100vh-73px)]">
