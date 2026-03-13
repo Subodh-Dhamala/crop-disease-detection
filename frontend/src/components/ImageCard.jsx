@@ -7,7 +7,7 @@ const ImageCard = ({ image, onClick, onDelete }) => {
   const getStatusStyle = () => {
     const disease = image.diseaseDetected?.toLowerCase();
     if (!disease || disease === "pending") return { backgroundColor: "#ca8a04" };
-    if (disease === "unknown") return { backgroundColor: "#ca8a04" }; // Yellow for low confidence
+    if (disease === "unknown") return { backgroundColor: "#ca8a04" };
     return disease.includes("healthy") ? { backgroundColor: "#22c55e" } : { backgroundColor: "#ef4444" };
   };
 
@@ -15,7 +15,11 @@ const ImageCard = ({ image, onClick, onDelete }) => {
     const disease = image.diseaseDetected?.toLowerCase();
     if (!disease || disease === "pending") return "Analyzing...";
     if (disease === "unknown") return "Low Confidence";
-    return image.diseaseDetected;
+    
+    // Format disease name for display (remove underscores, make readable)
+    return image.diseaseDetected
+      .replace(/__/g, ' - ')
+      .replace(/_/g, ' ');
   };
 
   const handleDelete = async (e) => {
@@ -51,12 +55,12 @@ const ImageCard = ({ image, onClick, onDelete }) => {
         className="w-full h-48 object-cover rounded-xl mb-4"
       />
 
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-400">
+      <div className="flex justify-between items-start gap-2 mb-3">
+        <p className="text-sm text-gray-400 flex-shrink-0">
           {new Date(image.createdAt).toLocaleDateString()}
         </p>
         <span
-          className="px-3 py-1 text-xs text-white rounded-full"
+          className="px-2 py-1 text-xs text-white rounded-full text-center break-words leading-tight max-w-[60%]"
           style={getStatusStyle()}
         >
           {getStatusLabel()}
@@ -65,7 +69,7 @@ const ImageCard = ({ image, onClick, onDelete }) => {
 
       {/* Show confidence only if not pending and confidence exists */}
       {image.confidence && image.diseaseDetected !== 'pending' && (
-        <div className="mt-3">
+        <div className="mb-3">
           <div className="flex justify-between text-xs text-zinc-500 mb-1">
             <span>Confidence</span>
             <span>{Math.round(image.confidence * 100)}%</span>
@@ -84,7 +88,7 @@ const ImageCard = ({ image, onClick, onDelete }) => {
       )}
 
       {/* Delete */}
-      <div className="mt-3 flex gap-2" onClick={(e) => e.stopPropagation()}>
+      <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
         {confirming ? (
           <>
             <button
