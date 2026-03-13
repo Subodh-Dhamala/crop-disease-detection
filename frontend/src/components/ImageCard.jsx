@@ -7,12 +7,14 @@ const ImageCard = ({ image, onClick, onDelete }) => {
   const getStatusStyle = () => {
     const disease = image.diseaseDetected?.toLowerCase();
     if (!disease || disease === "pending") return { backgroundColor: "#ca8a04" };
+    if (disease === "unknown") return { backgroundColor: "#ca8a04" }; // Yellow for low confidence
     return disease.includes("healthy") ? { backgroundColor: "#22c55e" } : { backgroundColor: "#ef4444" };
   };
 
   const getStatusLabel = () => {
     const disease = image.diseaseDetected?.toLowerCase();
     if (!disease || disease === "pending") return "Analyzing...";
+    if (disease === "unknown") return "Low Confidence";
     return image.diseaseDetected;
   };
 
@@ -61,16 +63,21 @@ const ImageCard = ({ image, onClick, onDelete }) => {
         </span>
       </div>
 
-      {image.confidence && (
+      {/* Show confidence only if not pending and confidence exists */}
+      {image.confidence && image.diseaseDetected !== 'pending' && (
         <div className="mt-3">
           <div className="flex justify-between text-xs text-zinc-500 mb-1">
             <span>Confidence</span>
-            <span>{Math.round(image.confidence)}%</span>
+            <span>{Math.round(image.confidence * 100)}%</span>
           </div>
           <div className="w-full bg-white/10 rounded-full h-1.5">
             <div
-              className="bg-emerald-500 h-1.5 rounded-full transition-all"
-              style={{ width: `${image.confidence}%` }}
+              className={`h-1.5 rounded-full transition-all ${
+                image.confidence >= 0.8 ? "bg-green-500" :
+                image.confidence >= 0.5 ? "bg-yellow-500" :
+                "bg-red-500"
+              }`}
+              style={{ width: `${image.confidence * 100}%` }}
             />
           </div>
         </div>
@@ -83,7 +90,7 @@ const ImageCard = ({ image, onClick, onDelete }) => {
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="flex-1 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all"
+              className="flex-1 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all disabled:opacity-50"
             >
               {deleting ? "Deleting..." : "Confirm"}
             </button>
