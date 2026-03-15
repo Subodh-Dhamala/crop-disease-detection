@@ -20,14 +20,11 @@ const imageSchema = new mongoose.Schema(
       type: Number,
     },
     advisory: {
-      description: String,
-      symptoms: [String],
-      causes: [String],
-      treatment: [String],
-      prevention: [String],
-    },
+      type: mongoose.Schema.Types.Mixed,  //Accepts any structure - both old and new
+      default: {}
+    }
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 const Image = mongoose.model("Image", imageSchema);
