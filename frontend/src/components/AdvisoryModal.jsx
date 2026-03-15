@@ -13,22 +13,22 @@ const AdvisoryModal = ({ image, onClose }) => {
 
   const showConfidence = image.confidence && image.confidence > 0 && !isPending && !isUnknown;
 
-  // Helper to get text - handles both string and object formats
+  // Smart getter - handles BOTH old flat format AND new nested format
   const getText = (field) => {
     if (!field) return "";
     if (typeof field === "string") return field;
-    if (typeof field === "object") {
+    if (typeof field === "object" && !Array.isArray(field)) {
       return field[lang] || field["english"] || "";
     }
     return "";
   };
 
-  // Helper to get array - handles both array and object formats
   const getArray = (field) => {
     if (!field) return [];
     if (Array.isArray(field)) return field;
     if (typeof field === "object") {
-      return field[lang] || field["english"] || [];
+      const arr = field[lang] || field["english"] || [];
+      return Array.isArray(arr) ? arr : [];
     }
     return [];
   };
@@ -81,14 +81,16 @@ const AdvisoryModal = ({ image, onClose }) => {
           <h2 className="text-2xl font-bold text-white mb-2">
             {isUnknown 
               ? (isNepali ? "अज्ञात" : "Unknown")
-              : image.diseaseDetected?.replace(/__/g, ' - ').replace(/_/g, ' ') || "Unknown"}
+              : (isNepali && advisory.disease_nepali) 
+                ? advisory.disease_nepali
+                : advisory.disease || image.diseaseDetected?.replace(/__/g, ' - ').replace(/_/g, ' ') || "Unknown"}
           </h2>
           
           {/* Crop & Severity */}
           {(advisory.crop || advisory.crop_nepali) && (
             <p className="text-zinc-400 text-sm mb-2">
               {isNepali ? (advisory.crop_nepali || advisory.crop) : advisory.crop}
-              {advisory.severity && ` • ${advisory.severity} Severity`}
+              {advisory.severity && ` • ${advisory.severity} ${isNepali ? 'गम्भीरता' : 'Severity'}`}
             </p>
           )}
           
@@ -201,7 +203,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {isUnknown && (
           <div className="mt-6 bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4">
             <h3 className="text-lg font-semibold text-yellow-400 mb-2">
-              {isNepali ? "पहिचान गर्न सकिएन" : "Could Not Identify"}
+              ⚠️ {isNepali ? "पहिचान गर्न सकिएन" : "Could Not Identify"}
             </h3>
             <p className="text-gray-300 text-sm">
               {isNepali 
