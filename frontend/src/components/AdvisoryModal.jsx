@@ -13,18 +13,24 @@ const AdvisoryModal = ({ image, onClose }) => {
 
   const showConfidence = image.confidence && image.confidence > 0 && !isPending && !isUnknown;
 
-  // Helper to get language-specific text
+  // Helper to get text - handles both string and object formats
   const getText = (field) => {
     if (!field) return "";
     if (typeof field === "string") return field;
-    return field[lang] || field["english"] || "";
+    if (typeof field === "object") {
+      return field[lang] || field["english"] || "";
+    }
+    return "";
   };
 
-  // Helper to get language-specific array
+  // Helper to get array - handles both array and object formats
   const getArray = (field) => {
     if (!field) return [];
     if (Array.isArray(field)) return field;
-    return field[lang] || field["english"] || [];
+    if (typeof field === "object") {
+      return field[lang] || field["english"] || [];
+    }
+    return [];
   };
 
   return (
@@ -34,7 +40,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white text-2xl hover:text-gray-300"
+          className="absolute top-4 right-4 text-white text-2xl hover:text-gray-300 w-8 h-8 flex items-center justify-center"
         >
           ✕
         </button>
@@ -44,7 +50,9 @@ const AdvisoryModal = ({ image, onClose }) => {
           <button
             onClick={() => setLang("english")}
             className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-              !isNepali ? "bg-emerald-500 text-white" : "bg-white/10 text-zinc-400 hover:bg-white/20"
+              !isNepali
+                ? "bg-emerald-500 text-white"
+                : "bg-white/10 text-zinc-400 hover:bg-white/20"
             }`}
           >
             English
@@ -52,7 +60,9 @@ const AdvisoryModal = ({ image, onClose }) => {
           <button
             onClick={() => setLang("nepali")}
             className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-              isNepali ? "bg-emerald-500 text-white" : "bg-white/10 text-zinc-400 hover:bg-white/20"
+              isNepali
+                ? "bg-emerald-500 text-white"
+                : "bg-white/10 text-zinc-400 hover:bg-white/20"
             }`}
           >
             नेपाली
@@ -66,7 +76,7 @@ const AdvisoryModal = ({ image, onClose }) => {
           className="w-full h-64 object-cover rounded-xl mb-6"
         />
 
-        {/* Disease Name */}
+        {/* Disease Name & Status */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">
             {isUnknown 
@@ -75,9 +85,9 @@ const AdvisoryModal = ({ image, onClose }) => {
           </h2>
           
           {/* Crop & Severity */}
-          {advisory.crop && (
+          {(advisory.crop || advisory.crop_nepali) && (
             <p className="text-zinc-400 text-sm mb-2">
-              {isNepali ? advisory.crop_nepali || advisory.crop : advisory.crop}
+              {isNepali ? (advisory.crop_nepali || advisory.crop) : advisory.crop}
               {advisory.severity && ` • ${advisory.severity} Severity`}
             </p>
           )}
@@ -99,13 +109,16 @@ const AdvisoryModal = ({ image, onClose }) => {
           <div className="mb-6">
             <div className="flex justify-between text-sm text-zinc-400 mb-2">
               <span>{isNepali ? "विश्वास स्तर" : "Confidence Level"}</span>
-              <span className="font-semibold text-white">{Math.round(image.confidence * 100)}%</span>
+              <span className="font-semibold text-white">
+                {Math.round(image.confidence * 100)}%
+              </span>
             </div>
             <div className="w-full bg-white/10 rounded-full h-2">
               <div
                 className={`h-2 rounded-full transition-all ${
                   image.confidence >= 0.8 ? "bg-green-500" :
-                  image.confidence >= 0.5 ? "bg-yellow-500" : "bg-red-500"
+                  image.confidence >= 0.5 ? "bg-yellow-500" :
+                  "bg-red-500"
                 }`}
                 style={{ width: `${image.confidence * 100}%` }}
               />
@@ -184,11 +197,11 @@ const AdvisoryModal = ({ image, onClose }) => {
           </div>
         )}
 
-        {/* Warning */}
+        {/* Warning for Unknown */}
         {isUnknown && (
           <div className="mt-6 bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4">
             <h3 className="text-lg font-semibold text-yellow-400 mb-2">
-             {isNepali ? "पहिचान गर्न सकिएन" : "Could Not Identify"}
+              {isNepali ? "पहिचान गर्न सकिएन" : "Could Not Identify"}
             </h3>
             <p className="text-gray-300 text-sm">
               {isNepali 
