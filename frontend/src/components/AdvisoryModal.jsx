@@ -87,7 +87,7 @@ const AdvisoryModal = ({ image, onClose }) => {
           </h2>
           
           {/* Crop & Severity */}
-          {(advisory.crop || advisory.crop_nepali) && (
+          {!isUnknown && (advisory.crop || advisory.crop_nepali) && (
             <p className="text-zinc-400 text-sm mb-2">
               {isNepali ? (advisory.crop_nepali || advisory.crop) : advisory.crop}
               {advisory.severity && ` • ${advisory.severity} ${isNepali ? 'गम्भीरता' : 'Severity'}`}
@@ -106,7 +106,7 @@ const AdvisoryModal = ({ image, onClose }) => {
           </div>
         </div>
 
-        {/* Confidence */}
+        {/* Confidence - Only show if > 0 and not unknown/pending */}
         {showConfidence && (
           <div className="mb-6">
             <div className="flex justify-between text-sm text-zinc-400 mb-2">
@@ -118,7 +118,7 @@ const AdvisoryModal = ({ image, onClose }) => {
             <div className="w-full bg-white/10 rounded-full h-2">
               <div
                 className={`h-2 rounded-full transition-all ${
-                  image.confidence >= 0.8 ? "bg-green-500" :
+                  image.confidence >= 0.8 ? "bg-emerald-500" :
                   image.confidence >= 0.5 ? "bg-yellow-500" :
                   "bg-red-500"
                 }`}
@@ -136,7 +136,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {/* Description */}
         {getText(advisory.description) && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-lg font-semibold text-emerald-400 mb-2">
               {isNepali ? "विवरण" : "Description"}
             </h3>
             <p className="text-gray-300">{getText(advisory.description)}</p>
@@ -146,7 +146,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {/* Symptoms */}
         {getArray(advisory.symptoms).length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-lg font-semibold text-emerald-400 mb-2">
               {isNepali ? "लक्षणहरू" : "Symptoms"}
             </h3>
             <ul className="list-disc list-inside text-gray-300 space-y-1">
@@ -160,7 +160,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {/* Causes */}
         {getArray(advisory.causes).length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-lg font-semibold text-emerald-400 mb-2">
               {isNepali ? "कारणहरू" : "Causes"}
             </h3>
             <ul className="list-disc list-inside text-gray-300 space-y-1">
@@ -174,7 +174,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {/* Treatment */}
         {!isUnknown && getArray(advisory.treatment).length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-lg font-semibold text-emerald-400 mb-2">
               {isNepali ? "उपचार" : "Treatment"}
             </h3>
             <ul className="list-disc list-inside text-gray-300 space-y-1">
@@ -188,7 +188,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {/* Prevention */}
         {getArray(advisory.prevention).length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-lg font-semibold text-emerald-400 mb-2">
               {isNepali ? (isUnknown ? "अर्को कदम" : "रोकथाम") : (isUnknown ? "Next Steps" : "Prevention")}
             </h3>
             <ul className="list-disc list-inside text-gray-300 space-y-1">
