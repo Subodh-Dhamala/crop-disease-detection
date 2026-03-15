@@ -44,11 +44,14 @@ const ImageCard = ({ image, onClick, onDelete }) => {
     setConfirming(false);
   };
 
-  // Only show confidence if it's > 0 and not pending/unknown
+  // Only show confidence if it's > 0 and not unknown/pending
   const showConfidence = image.confidence && 
                         image.confidence > 0 && 
                         image.diseaseDetected?.toLowerCase() !== 'pending' &&
                         image.diseaseDetected?.toLowerCase() !== 'unknown';
+
+  // Check if it's unknown
+  const isUnknown = image.diseaseDetected?.toLowerCase() === 'unknown';
 
   return (
     <div
@@ -73,8 +76,8 @@ const ImageCard = ({ image, onClick, onDelete }) => {
         </span>
       </div>
 
-      {/* Show confidence only if valid (> 0 and not unknown/pending) */}
-      {showConfidence && (
+      {/* Show confidence bar OR unknown message */}
+      {showConfidence ? (
         <div className="mb-3">
           <div className="flex justify-between text-xs text-zinc-500 mb-1">
             <span>Confidence</span>
@@ -91,7 +94,11 @@ const ImageCard = ({ image, onClick, onDelete }) => {
             />
           </div>
         </div>
-      )}
+      ) : isUnknown ? (
+        <div className="mb-3 text-center py-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+          <p className="text-xs text-yellow-400">Low quality or non-plant image</p>
+        </div>
+      ) : null}
 
       {/* Delete */}
       <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
