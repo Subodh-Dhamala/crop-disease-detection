@@ -11,7 +11,6 @@ const AdvisoryModal = ({ image, onClose }) => {
   const isPending = image.diseaseDetected?.toLowerCase() === 'pending';
   const isNepali = lang === "nepali";
 
-  // Don't show confidence if it's 0, pending, or unknown
   const showConfidence = image.confidence && image.confidence > 0 && !isPending && !isUnknown;
 
   return (
@@ -60,7 +59,9 @@ const AdvisoryModal = ({ image, onClose }) => {
         {/* Disease Name & Status */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-white mb-2">
-            {image.diseaseDetected?.replace(/__/g, ' - ').replace(/_/g, ' ') || "Unknown"}
+            {isUnknown 
+              ? (isNepali ? "अज्ञात" : "Unknown")
+              : image.diseaseDetected?.replace(/__/g, ' - ').replace(/_/g, ' ') || "Unknown"}
           </h2>
           
           <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
@@ -69,7 +70,7 @@ const AdvisoryModal = ({ image, onClose }) => {
             "bg-red-500/20 text-red-400"
           }`}>
             {isHealthy ? (isNepali ? "स्वस्थ" : "Healthy") :
-             isUnknown ? (isNepali ? "अज्ञात" : "Not Identified") :
+             isUnknown ? (isNepali ? "अज्ञात अवस्था" : "Unknown Condition") :
              isPending ? (isNepali ? "विश्लेषण गर्दै" : "Analyzing") :
              (isNepali ? "रोग पत्ता लाग्यो" : "Disease Detected")}
           </div>
@@ -106,7 +107,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {advisory.description && (
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-white mb-2">
-              {isNepali ? "विवरण" : "Description"}
+              {isNepali ? "सन्देश" : "Message"}
             </h3>
             <p className="text-gray-300">{advisory.description}</p>
           </div>
@@ -140,11 +141,11 @@ const AdvisoryModal = ({ image, onClose }) => {
           </div>
         )}
 
-        {/* Treatment */}
-        {advisory.treatment && advisory.treatment.length > 0 && (
+        {/* Treatment - Only show for real diseases, NOT for Unknown */}
+        {!isUnknown && advisory.treatment && advisory.treatment.length > 0 && (
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-white mb-2">
-              {isNepali ? "सामान्य सल्लाह" : "General Advice"}
+              {isNepali ? "उपचार" : "Treatment"}
             </h3>
             <ul className="list-disc list-inside text-gray-300 space-y-1">
               {advisory.treatment.map((item, idx) => (
@@ -172,7 +173,7 @@ const AdvisoryModal = ({ image, onClose }) => {
         {isUnknown && (
           <div className="mt-6 bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4">
             <h3 className="text-lg font-semibold text-yellow-400 mb-2">
-              {isNepali ? "पहिचान गर्न सकिएन" : "Could Not Identify"}
+               {isNepali ? "पहिचान गर्न सकिएन" : "Could Not Identify"}
             </h3>
             <p className="text-gray-300 text-sm">
               {isNepali 

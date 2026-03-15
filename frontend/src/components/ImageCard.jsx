@@ -14,7 +14,7 @@ const ImageCard = ({ image, onClick, onDelete }) => {
   const getStatusLabel = () => {
     const disease = image.diseaseDetected?.toLowerCase();
     if (!disease || disease === "pending") return "Analyzing...";
-    if (disease === "unknown") return "Low Confidence";
+    if (disease === "unknown") return "Not Identified";
     
     // Format disease name for display (remove underscores, make readable)
     return image.diseaseDetected
@@ -44,6 +44,12 @@ const ImageCard = ({ image, onClick, onDelete }) => {
     setConfirming(false);
   };
 
+  // Only show confidence if it's > 0 and not pending/unknown
+  const showConfidence = image.confidence && 
+                        image.confidence > 0 && 
+                        image.diseaseDetected?.toLowerCase() !== 'pending' &&
+                        image.diseaseDetected?.toLowerCase() !== 'unknown';
+
   return (
     <div
       onClick={() => onClick?.(image)}
@@ -67,8 +73,8 @@ const ImageCard = ({ image, onClick, onDelete }) => {
         </span>
       </div>
 
-      {/* Show confidence only if not pending and confidence exists */}
-      {image.confidence && image.diseaseDetected !== 'pending' && (
+      {/* Show confidence only if valid (> 0 and not unknown/pending) */}
+      {showConfidence && (
         <div className="mb-3">
           <div className="flex justify-between text-xs text-zinc-500 mb-1">
             <span>Confidence</span>
