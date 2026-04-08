@@ -663,19 +663,18 @@ Agriculture-Crop-Disease-Detection-Advisory-System/
 - Advisory system data structure and content
 - Model export and inference pipeline
 
-### Subodh Dhamala - Frontend Development
+### Subodh Dhamala &  Bigyam Karmacharya - Frontend, Backend Development & ML Model integration
 - React application architecture and state management
 - UI/UX implementation with TailwindCSS
 - Authentication flow and context management
 - API integration and error handling
 - Responsive design and mobile optimization
-
-### Bigyam Karmacharya - Backend Development
 - Node.js/Express server architecture
 - MongoDB database schema design
 - JWT authentication implementation
 - RESTful API endpoint development
 - File upload handling with Multer
+- ML integration with FastApi
 
 ### Pujan Lakhe - System Design and Testing
 - Overall system architecture and integration
