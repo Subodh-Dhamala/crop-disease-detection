@@ -689,10 +689,12 @@ Agriculture-Crop-Disease-Detection-Advisory-System/
 ### Short Term (3-6 months)
 | Priority | Feature | Status |
 |----------|---------|--------|
+| 🔴 High | Add OAuth Login and Registration Support | Planned |
 | 🔴 High | Improve Coffee__NoRust model accuracy | Planned |
 | 🔴 High | Add mobile-responsive improvements | In Progress |
 | 🟡 Medium | Implement image compression for faster uploads | Planned |
 | 🟡 Medium | Add email notifications for disease alerts | Planned |
+
 
 ### Medium Term (6-12 months)
 | Priority | Feature | Status |
